@@ -4,18 +4,20 @@ from fastapi import FastAPI, Depends
 from pydantic import BaseModel
 from .auth import validate_api_key
 from .models.processor import AudioProcessor
-from .models.classifier import VoiceClassifier
-from .models.lid import LanguageDetector # <--- Import new module
+# FIX: Import the correct class name 'VoiceClassifier'
+from .models.classifier import VoiceClassifier 
+from .models.lid import LanguageDetector 
 
 app = FastAPI()
 
 # Initialize all models
 processor = AudioProcessor()
-classifier = VoiceClassifier()
-lid_detector = LanguageDetector() # <--- Initialize LID
+# FIX: Initialize the class with the correct name
+classifier = VoiceClassifier() 
+lid_detector = LanguageDetector()
 
 class DetectionRequest(BaseModel):
-    language: str # We receive this, but we will double-check it!
+    language: str
     audioFormat: str
     audioBase64: str
 
@@ -23,30 +25,34 @@ class DetectionRequest(BaseModel):
 async def detect_voice(payload: DetectionRequest):
     temp_filename = f"temp_{uuid.uuid4()}.mp3"
     try:
-        # 1. Decode & Save Temp File (Needed for efficient LID processing)
+        # 1. Decode & Save Temp File
         audio_io = processor.decode_base64(payload.audioBase64)
         
+        # Write to disk for Librosa/LID to read
         with open(temp_filename, "wb") as f:
             f.write(audio_io.getbuffer())
         
-        # 2. DETECT LANGUAGE (The AI decides!)
+        # 2. DETECT LANGUAGE (Facebook MMS)
         detected_lang = lid_detector.detect(temp_filename)
         
-        # 3. Process & Classify Voice (Human vs AI)
-        # Re-load for the classifier (or pass the path if you optimized classifier)
-        # Using our existing flow:
-        features = processor.extract_features(temp_filename) # Update processor to accept path
-        classification, confidence, explanation = classifier.predict(features)
+        # 3. FORENSIC ANALYSIS (AI vs Human)
+        # We pass the decoded audio object or array to the predictor
+        # Since our new classifier uses Librosa, passing the filename path 
+        # is actually safer/easier if we modify classifier to accept paths,
+        # but right now it expects an array. Let's load the array here.
+        import librosa
+        audio_array, _ = librosa.load(temp_filename, sr=16000)
+        
+        classification, confidence, explanation = classifier.predict(audio_array)
         
         # 4. Construct "Smart" Explanation
-        # If the user said "Tamil" but we heard "Hindi", mention it!
         final_explanation = explanation
         if payload.language.lower() != detected_lang.lower():
             final_explanation += f" (Note: Input labeled as {payload.language}, but AI detected {detected_lang})."
 
         return {
             "status": "success",
-            "language": detected_lang,  # We return the REAL language
+            "language": detected_lang,
             "classification": classification,
             "confidenceScore": confidence,
             "explanation": final_explanation
