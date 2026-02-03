@@ -1,0 +1,23 @@
+# Core API Framework
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+python-multipart>=0.0.6
+pydantic>=2.0.0
+
+# Audio Processing
+librosa>=0.10.1
+numpy>=1.26.0
+pydub>=0.25.1
+soundfile>=0.12.1  
+# (soundfile is often needed by librosa for better MP3/WAV support)
+
+# AI & Deep Learning (Hugging Face)
+torch>=2.1.0
+transformers>=4.36.0
+protobuf>=3.20.0
+sentencepiece>=0.1.99
+accelerate>=0.25.0
+speechbrain>=0.5.15
+# Utilities
+python-dotenv>=1.0.0
+requests>=2.31.0
