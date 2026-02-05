@@ -1,23 +1,63 @@
+# ============================================================================
+# VOICE CLASSIFIER API - REQUIREMENTS
+# Optimized for Multi-Layer Voice Detection System V2
+# ============================================================================
+
+# ----------------------------------------------------------------------------
 # Core API Framework
-fastapi>=0.109.0
-uvicorn[standard]>=0.27.0
-python-multipart>=0.0.6
-pydantic>=2.0.0
+# ----------------------------------------------------------------------------
+fastapi>=0.109.0,<0.120.0
+uvicorn[standard]>=0.27.0,<0.30.0
+python-multipart>=0.0.6,<0.1.0
+pydantic>=2.5.0,<3.0.0
+pydantic-settings>=2.0.0  # For environment configuration
 
-# Audio Processing
-librosa>=0.10.1
-numpy>=1.26.0
-pydub>=0.25.1
-soundfile>=0.12.1  
-# (soundfile is often needed by librosa for better MP3/WAV support)
+# ----------------------------------------------------------------------------
+# Audio Processing & Analysis
+# ----------------------------------------------------------------------------
+librosa>=0.10.1,<0.11.0
+numpy>=1.24.0,<2.0.0  # Librosa compatibility
+scipy>=1.11.0,<2.0.0  # Required for signal processing layers
+soundfile>=0.12.1,<0.13.0  # Better audio format support (MP3, WAV, FLAC)
+audioread>=3.0.0  # Additional format support
+resampy>=0.4.2  # High-quality audio resampling
+numba>=0.58.0  # Speed up librosa operations
 
-# AI & Deep Learning (Hugging Face)
-torch>=2.1.0
-transformers>=4.36.0
-protobuf>=3.20.0
-sentencepiece>=0.1.99
-accelerate>=0.25.0
-speechbrain>=0.5.15
-# Utilities
-python-dotenv>=1.0.0
-requests>=2.31.0
+# ----------------------------------------------------------------------------
+# AI & Deep Learning (Hugging Face Transformers)
+# ----------------------------------------------------------------------------
+torch>=2.1.0,<2.5.0  # PyTorch for model inference
+transformers>=4.36.0,<5.0.0  # HuggingFace models
+accelerate>=0.25.0,<0.35.0  # Faster model loading
+sentencepiece>=0.1.99,<0.3.0  # Tokenization for some models
+protobuf>=3.20.0,<5.0.0  # Protocol buffers for model serialization
+safetensors>=0.4.0  # Safe model weight loading
+
+# Optional: Uncomment if using SpeechBrain models
+# speechbrain>=0.5.15,<1.0.0
+
+# ----------------------------------------------------------------------------
+# Utilities & Configuration
+# ----------------------------------------------------------------------------
+python-dotenv>=1.0.0,<2.0.0  # Environment variables
+requests>=2.31.0,<3.0.0  # HTTP requests
+python-jose[cryptography]>=3.3.0  # JWT tokens (if using auth)
+passlib[bcrypt]>=1.7.4  # Password hashing (if using auth)
+
+# ----------------------------------------------------------------------------
+# Development & Testing (Optional - uncomment if needed)
+# ----------------------------------------------------------------------------
+# pytest>=7.4.0  # Testing framework
+# pytest-asyncio>=0.21.0  # Async test support
+# httpx>=0.25.0  # Test client
+# black>=23.0.0  # Code formatting
+# flake8>=6.0.0  # Linting
+# mypy>=1.7.0  # Type checking
+
+# ----------------------------------------------------------------------------
+# Production Optimization (Optional - uncomment for production)
+# ----------------------------------------------------------------------------
+# gunicorn>=21.2.0  # Production WSGI server
+# redis>=5.0.0  # Caching layer
+# celery>=5.3.0  # Background task processing
+# sentry-sdk>=1.38.0  # Error monitoring
