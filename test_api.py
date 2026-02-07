@@ -10,7 +10,7 @@ from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeou
 from typing import Dict, Optional
 
 # CONFIG
-API_URL = "http://127.0.0.1:8000/api/voice-detection"
+API_URL = "https://zenoharsh01-voice-detection-api.hf.space/api/voice-detection"
 API_KEY = "sk_test_123456789"
 SAMPLES_DIR = "samples"
 REQUEST_TIMEOUT = 300  # Increased timeout for complex processing
